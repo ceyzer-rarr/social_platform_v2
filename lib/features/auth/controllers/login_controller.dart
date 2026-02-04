@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/network/api_client.dart';
 import '../../../core/utils/snackbar_helper.dart';
 import '../../../core/utils/validators.dart';
 import '../services/auth_service.dart';
@@ -32,19 +33,22 @@ class LoginController extends GetxController {
     final password = passwordController.text;
 
     try {
-      final result = await _authService
-          .login(email: email, password: password)
-          .execute();
+      final result =
+      await _authService.login(email: email, password: password).execute();
 
       switch (result.status) {
         case LoginStatus.success:
           SnackbarHelper.showSuccess('Login successful');
 
-          // TODO: store token securely (e.g. flutter_secure_storage)
-          // final token = result.token;
+          // store token in ApiClient so profile/me + others are authenticated
+          if (result.token != null) {
+            ApiClient.instance.setAuthToken(result.token!);
+          }
 
-          // For now, just navigate to some Home screen later.
-          // Get.offAllNamed(AppRoutes.home);
+          // Later: save token in secure storage for auto-login
+
+          // Go to main shell (home + profile bottom nav)
+          Get.offAllNamed(AppRoutes.main);
           break;
 
         case LoginStatus.otpRequired:

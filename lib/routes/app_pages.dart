@@ -1,11 +1,16 @@
 import 'package:get/get.dart';
 
-import '../features/auth/controllers/register_controller.dart';
-import '../features/auth/views/register_screen.dart';
 import '../features/auth/controllers/login_controller.dart';
-import '../features/auth/views/login_screen.dart';
 import '../features/auth/controllers/otp_controller.dart';
+import '../features/auth/controllers/register_controller.dart';
+import '../features/auth/views/login_screen.dart';
 import '../features/auth/views/otp_screen.dart';
+import '../features/auth/views/register_screen.dart';
+import '../features/main/controllers/main_shell_controller.dart';
+import '../features/main/views/main_shell_screen.dart';
+import '../features/profile/controllers/profile_controller.dart';
+import '../features/profile/controllers/profile_edit_controller.dart';
+import '../features/profile/views/profile_edit_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -31,6 +36,21 @@ class AppPages {
       page: () => const OtpScreen(),
       binding: BindingsBuilder(() {
         Get.put(OtpController());
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.main,
+      page: () => const MainShellScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(MainShellController());
+        Get.put(ProfileController());
+      }),
+    ),
+    GetPage(
+      name: AppRoutes.profileEdit,
+      page: () => const ProfileEditScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(ProfileEditController());
       }),
     ),
   ];
