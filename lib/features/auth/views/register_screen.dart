@@ -258,13 +258,13 @@ class RegisterScreen extends GetView<RegisterController> {
                           // TODO: implement Facebook login
                         },
                       ),
-                      const SizedBox(width: 16),
-                      SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
-                        onTap: () {
-                          // TODO: implement Twitter login
-                        },
-                      ),
+                      // const SizedBox(width: 16),
+                      // SocialIconButton(
+                      //   icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
+                      //   onTap: () {
+                      //     // TODO: implement Twitter login
+                      //   },
+                      // ),
                     ],
                   ),
 
