@@ -7,4 +7,9 @@ class ApiEndpoints {
   static const String login = '/api/auth/login';
   static const String verifyOtp = '/api/auth/verify-otp';
   static const String resendOtp = '/api/auth/resend-otp';
+  static const String logout     = '/api/auth/logout';
+
+  // Profile
+  static const String profileMe = '/api/profile/me';
+  static const String profileUpdate = '/api/profile/update';
 }

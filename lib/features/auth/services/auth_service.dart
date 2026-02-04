@@ -1,11 +1,12 @@
-import '../../../core/network/api_client.dart';
 import '../../../core/constants/api_endpoints.dart';
+import '../../../core/network/api_client.dart';
 import '../../../core/network/api_client.dart' show ApiException;
 
-/// You already had register() – keep it and add the new methods.
-
+/// Handles all auth-related HTTP calls.
 class AuthService {
   final ApiClient _client = ApiClient.instance;
+
+  // ---------- REGISTER ----------
 
   Future<void> register({
     required String username,
@@ -27,18 +28,25 @@ class AuthService {
     await _client.post(ApiEndpoints.register, body: body);
   }
 
-  // -------- LOGIN --------
+  // ---------- LOGIN ----------
 
-  /// Represents the result state of login.
+  /// Builder-style wrapper to keep controller code clean.
   LoginResult login({
     required String email,
     required String password,
   }) {
     return LoginResult._(email: email, password: password);
   }
+
+  // ---------- LOGOUT ----------
+
+  Future<void> logout() async {
+    await _client.post(ApiEndpoints.logout);
+    _client.setAuthToken(null);
+  }
 }
 
-/// Simple builder-style class to hide ApiClient details and allow control logic.
+/// Internal class used by AuthService.login()
 class LoginResult {
   final String email;
   final String password;
@@ -67,12 +75,11 @@ class LoginResult {
         lastName: data['last_name']?.toString(),
       );
     } on ApiException catch (e) {
-      // our backend returns 403 for:
-      // - Invalid credentials
-      // - Account not verified. OTP sent.
-      // - Verification expired. OTP sent.
       final msg = e.message;
 
+      // backend uses 403 with messages:
+      // - "Account not verified. OTP sent."
+      // - "Verification expired. OTP sent."
       if (e.statusCode == 403 && msg.contains('OTP sent')) {
         return LoginResponse(
           status: LoginStatus.otpRequired,
@@ -109,7 +116,7 @@ class LoginResponse {
   });
 }
 
-// -------- OTP METHODS (simple) --------
+// ---------- OTP methods as extension ----------
 
 extension OtpMethods on AuthService {
   Future<void> verifyOtp({

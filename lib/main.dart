@@ -22,7 +22,7 @@ class CignifiApp extends StatelessWidget {
         fontFamily: 'Roboto',
         useMaterial3: false,
       ),
-      initialRoute: AppRoutes.login,   // start from login
+      initialRoute: AppRoutes.login,
       getPages: AppPages.routes,
     );
   }
