@@ -29,20 +29,20 @@ class LoginScreen extends GetView<LoginController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Back arrow (optional)
-                  IconButton(
-                    onPressed: () => Get.back(canPop: true),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                  const SizedBox(height: 16),
+                  // IconButton(
+                  //   onPressed: () => Get.back(canPop: true),
+                  //   icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                  //   padding: EdgeInsets.zero,
+                  //   constraints: const BoxConstraints(),
+                  // ),
+                  const SizedBox(height: 34),
 
                   // Logo
                   Center(
                     child: Column(
                       children: const [
                         Text(
-                          'cignifi',
+                          'Social Platform',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
@@ -167,13 +167,13 @@ class LoginScreen extends GetView<LoginController> {
                           // TODO: implement Facebook login
                         },
                       ),
-                      const SizedBox(width: 16),
-                      SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
-                        onTap: () {
-                          // TODO: implement Twitter login
-                        },
-                      ),
+                      // const SizedBox(width: 16),
+                      // SocialIconButton(
+                      //   icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
+                      //   onTap: () {
+                      //     // TODO: implement Twitter login
+                      //   },
+                      // ),
                     ],
                   ),
 
