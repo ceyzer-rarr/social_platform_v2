@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -19,6 +19,16 @@ class RegisterScreen extends GetView<RegisterController> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.background,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.black,),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -28,40 +38,19 @@ class RegisterScreen extends GetView<RegisterController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back arrow
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                  const SizedBox(height: 16),
+                  // Back
+                  // IconButton(
+                  //   onPressed: () => Get.back(),
+                  //   icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                  //   padding: EdgeInsets.zero,
+                  //   constraints: const BoxConstraints(),
+                  // ),
+                  const SizedBox(height: 8),
 
-                  // Logo placeholder
-                  Center(
-                    child: Column(
-                      children: const [
-                        // Replace with Image.asset('assets/logo.png', height: 40)
-                        Text(
-                          'Social Platform',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  const Text('Create your Account', style: AppTextStyles.title),
+                  const Text('Create account', style: AppTextStyles.title),
                   const SizedBox(height: 4),
                   const Text(
-                    'Please fill in the information below to sign up.',
+                    'Sign up to get started',
                     style: AppTextStyles.subtitle,
                   ),
                   const SizedBox(height: 24),
@@ -77,6 +66,7 @@ class RegisterScreen extends GetView<RegisterController> {
                               Validators.requiredField(v, fieldName: 'Username'),
                         ),
                         const SizedBox(height: 16),
+
                         Row(
                           children: [
                             Expanded(
@@ -84,7 +74,9 @@ class RegisterScreen extends GetView<RegisterController> {
                                 label: 'First name',
                                 controller: controller.firstNameController,
                                 validator: (v) => Validators.requiredField(
-                                    v, fieldName: 'First name'),
+                                  v,
+                                  fieldName: 'First name',
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -93,12 +85,15 @@ class RegisterScreen extends GetView<RegisterController> {
                                 label: 'Last name',
                                 controller: controller.lastNameController,
                                 validator: (v) => Validators.requiredField(
-                                    v, fieldName: 'Last name'),
+                                  v,
+                                  fieldName: 'Last name',
+                                ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
+
                         AppTextField(
                           label: 'Email',
                           controller: controller.emailController,
@@ -107,50 +102,20 @@ class RegisterScreen extends GetView<RegisterController> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Password
+                        // Password + confirm
                         Obx(
                               () => Column(
                             children: [
                               TextFormField(
                                 controller: controller.passwordController,
                                 obscureText: controller.isPasswordObscured.value,
-                                decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  labelStyle: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 14),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.inputBorder),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.inputBorder),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.primary, width: 1.2),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      controller.isPasswordObscured.value
-                                          ? Icons.visibility_off_rounded
-                                          : Icons.visibility_rounded,
-                                    ),
-                                    onPressed: () {
-                                      controller.isPasswordObscured.value =
-                                      !controller.isPasswordObscured.value;
-                                    },
-                                  ),
+                                decoration: _passwordDecoration(
+                                  'Password',
+                                  controller.isPasswordObscured.value,
+                                      () {
+                                    controller.isPasswordObscured.value =
+                                    !controller.isPasswordObscured.value;
+                                  },
                                 ),
                                 validator: (v) => Validators.minLength(
                                   v,
@@ -163,45 +128,13 @@ class RegisterScreen extends GetView<RegisterController> {
                                 controller: controller.confirmPasswordController,
                                 obscureText:
                                 controller.isConfirmPasswordObscured.value,
-                                decoration: InputDecoration(
-                                  labelText: 'Confirm Password',
-                                  labelStyle: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 14),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.inputBorder),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.inputBorder),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                        color: AppColors.primary, width: 1.2),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      controller
-                                          .isConfirmPasswordObscured.value
-                                          ? Icons.visibility_off_rounded
-                                          : Icons.visibility_rounded,
-                                    ),
-                                    onPressed: () {
-                                      controller.isConfirmPasswordObscured
-                                          .value = !controller
-                                          .isConfirmPasswordObscured.value;
-                                    },
-                                  ),
+                                decoration: _passwordDecoration(
+                                  'Confirm Password',
+                                  controller.isConfirmPasswordObscured.value,
+                                      () {
+                                    controller.isConfirmPasswordObscured.value =
+                                    !controller.isConfirmPasswordObscured.value;
+                                  },
                                 ),
                                 validator: (v) => Validators.minLength(
                                   v,
@@ -228,13 +161,12 @@ class RegisterScreen extends GetView<RegisterController> {
 
                   const SizedBox(height: 24),
 
-                  // Or sign up with
                   Row(
                     children: const [
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('- Or sign up with -',
+                        child: Text('or continue with',
                             style: AppTextStyles.subtitle),
                       ),
                       Expanded(child: Divider()),
@@ -242,38 +174,91 @@ class RegisterScreen extends GetView<RegisterController> {
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
                       SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.google, size: 20),
+                        icon: const FaIcon(
+                          FontAwesomeIcons.google,
+                          size: 20,
+                          color: Color(0xFFDB4437), // Google red
+                        ),
+                        text: 'Continue with Google',
                         onTap: () {
-                          // TODO: implement Google login
+                          // TODO: Google sign-in
                         },
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(height: 12),
                       SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.facebookF, size: 20),
+                        icon: const FaIcon(
+                          FontAwesomeIcons.github,
+                          size: 20,
+                          color: Colors.black, // GitHub black
+                        ),
+                        text: 'Continue with GitHub',
                         onTap: () {
-                          // TODO: implement Facebook login
+                          // TODO: GitHub sign-in
                         },
                       ),
-                      // const SizedBox(width: 16),
-                      // SocialIconButton(
-                      //   icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
-                      //   onTap: () {
-                      //     // TODO: implement Twitter login
-                      //   },
-                      // ),
+
                     ],
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
+
+                  Center(
+                    child: TextButton(
+                      onPressed: () => Get.back(),
+                      child: const Text(
+                        'Already have an account? Log in',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration _passwordDecoration(
+      String label,
+      bool obscured,
+      VoidCallback toggle,
+      ) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textPrimary,
+      ),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.inputBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.inputBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
+      ),
+      suffixIcon: IconButton(
+        icon: Icon(
+          obscured ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+        ),
+        onPressed: toggle,
       ),
     );
   }

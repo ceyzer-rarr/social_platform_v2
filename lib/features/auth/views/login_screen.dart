@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -19,48 +19,37 @@ class LoginScreen extends GetView<LoginController> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.background,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+            color: Colors.black,
+          ),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 430, minHeight: size.height * 0.9),
+              constraints: BoxConstraints(
+                maxWidth: 430,
+                minHeight: size.height * 0.9,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Back arrow (optional)
-                  // IconButton(
-                  //   onPressed: () => Get.back(canPop: true),
-                  //   icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                  //   padding: EdgeInsets.zero,
-                  //   constraints: const BoxConstraints(),
-                  // ),
-                  const SizedBox(height: 34),
-
-                  // Logo
-                  Center(
-                    child: Column(
-                      children: const [
-                        Text(
-                          'Social Platform',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  const Text('Login to your Account', style: AppTextStyles.title),
+                  const Text('Welcome back', style: AppTextStyles.title),
                   const SizedBox(height: 4),
                   const Text(
-                    'Welcome back! Please enter your details.',
+                    'Log in to your account',
                     style: AppTextStyles.subtitle,
                   ),
                   const SizedBox(height: 24),
@@ -78,7 +67,7 @@ class LoginScreen extends GetView<LoginController> {
                         const SizedBox(height: 16),
 
                         Obx(
-                              () => TextFormField(
+                          () => TextFormField(
                             controller: controller.passwordController,
                             obscureText: controller.isPasswordObscured.value,
                             validator: controller.validatePassword,
@@ -92,21 +81,27 @@ class LoginScreen extends GetView<LoginController> {
                               filled: true,
                               fillColor: Colors.white,
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 14),
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                                 borderSide: const BorderSide(
-                                    color: AppColors.inputBorder),
+                                  color: AppColors.inputBorder,
+                                ),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                                 borderSide: const BorderSide(
-                                    color: AppColors.inputBorder),
+                                  color: AppColors.inputBorder,
+                                ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                                 borderSide: const BorderSide(
-                                    color: AppColors.primary, width: 1.2),
+                                  color: AppColors.primary,
+                                  width: 1.2,
+                                ),
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
@@ -116,18 +111,36 @@ class LoginScreen extends GetView<LoginController> {
                                 ),
                                 onPressed: () {
                                   controller.isPasswordObscured.value =
-                                  !controller.isPasswordObscured.value;
+                                      !controller.isPasswordObscured.value;
                                 },
                               ),
                             ),
                           ),
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 12),
+
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              // TODO: forgot password
+                            },
+                            child: const Text(
+                              'Forgot password?',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
 
                         Obx(
-                              () => PrimaryButton(
-                            label: 'Sign in',
+                          () => PrimaryButton(
+                            label: 'Log in',
                             isLoading: controller.isLoading.value,
                             onPressed: controller.submit,
                           ),
@@ -143,43 +156,46 @@ class LoginScreen extends GetView<LoginController> {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('- Or sign in with -',
-                            style: AppTextStyles.subtitle),
+                        child: Text(
+                          'or continue with',
+                          style: AppTextStyles.subtitle,
+                        ),
                       ),
                       Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
                       SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.google, size: 20),
+                        icon: const FaIcon(
+                          FontAwesomeIcons.google,
+                          size: 20,
+                          color: Color(0xFFDB4437),
+                        ),
+                        text: 'Continue with Google',
                         onTap: () {
-                          // TODO: implement Google login
+                          // TODO: Google sign-in
                         },
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(height: 12),
                       SocialIconButton(
-                        icon: const FaIcon(FontAwesomeIcons.facebookF, size: 20),
+                        icon: const FaIcon(
+                          FontAwesomeIcons.github,
+                          size: 20,
+                          color: Colors.black,
+                        ),
+                        text: 'Continue with GitHub',
                         onTap: () {
-                          // TODO: implement Facebook login
+                          // TODO: GitHub sign-in
                         },
                       ),
-                      // const SizedBox(width: 16),
-                      // SocialIconButton(
-                      //   icon: const FaIcon(FontAwesomeIcons.twitter, size: 20),
-                      //   onTap: () {
-                      //     // TODO: implement Twitter login
-                      //   },
-                      // ),
                     ],
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Sign up link
                   Center(
                     child: TextButton(
                       onPressed: () => Get.toNamed(AppRoutes.register),
@@ -193,8 +209,6 @@ class LoginScreen extends GetView<LoginController> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 16),
                 ],
               ),
             ),

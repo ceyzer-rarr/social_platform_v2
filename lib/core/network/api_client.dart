@@ -161,6 +161,32 @@ class ApiClient {
       throw ApiException(message: 'Invalid response format.');
     }
   }
+
+  Future<Map<String, dynamic>> delete(String path) async {
+    final uri = Uri.parse(ApiEndpoints.baseUrl + path);
+
+    try {
+      final response = await _client
+          .delete(uri, headers: _buildHeaders())
+          .timeout(const Duration(seconds: 15));
+
+      final decoded =
+      response.body.isNotEmpty ? jsonDecode(response.body) : null;
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return decoded is Map<String, dynamic> ? decoded : {};
+      } else {
+        throw ApiException(
+          statusCode: response.statusCode,
+          message: decoded is Map<String, dynamic>
+              ? (decoded['message']?.toString() ?? 'Unknown error')
+              : 'Something went wrong',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 class ApiException implements Exception {

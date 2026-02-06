@@ -41,7 +41,8 @@ class OtpController extends GetxController {
       SnackbarHelper.showSuccess('Account verified successfully');
 
       // After verify, go back to Login
-      Get.until((route) => route.settings.name == AppRoutes.login);
+      // Get.until((route) => route.settings.name == AppRoutes.login);
+      Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       SnackbarHelper.showError('Invalid or expired OTP');
     } finally {
