@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/network/api_client.dart';
 import '../models/profile_model.dart';
+import '../models/profile_post_model.dart';
 
 class ProfileService {
   final ApiClient _client = ApiClient.instance;
@@ -51,5 +52,12 @@ class ProfileService {
 
     final data = res['data'] as Map<String, dynamic>? ?? {};
     return ProfileModel.fromJson(data);
+  }
+
+  Future<List<ProfilePostModel>> getMyPhotos() async {
+    final res = await _client.get(ApiEndpoints.profileMyPhotos);
+
+    final List list = res['data'] ?? [];
+    return list.map((e) => ProfilePostModel.fromJson(e)).toList();
   }
 }

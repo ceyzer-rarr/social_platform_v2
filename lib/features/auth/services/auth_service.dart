@@ -28,9 +28,8 @@ class AuthService {
     await _client.post(ApiEndpoints.register, body: body);
   }
 
-  // ---------- LOGIN ----------
+  // ---------- LOGIN (EMAIL/PASSWORD) ----------
 
-  /// Builder-style wrapper to keep controller code clean.
   LoginResult login({
     required String email,
     required String password,
@@ -44,7 +43,43 @@ class AuthService {
     await _client.post(ApiEndpoints.logout);
     _client.setAuthToken(null);
   }
+
+  // ---------- DELETE ACCOUNT ----------
+
+  Future<void> deleteAccount() async {
+    await _client.delete('/api/delete-account');
+    _client.setAuthToken(null);
+  }
+
+  // ---------- GOOGLE LOGIN ----------
+
+  Future<Map<String, dynamic>> loginWithGoogleToken(String idToken) async {
+    final res = await _client.post(
+      '/api/auth/google/token',
+      body: {
+        'id_token': idToken, // ✅ important
+      },
+    );
+    return res;
+  }
+
+
+  // ---------- GITHUB LOGIN ----------
+
+  Future<Map<String, dynamic>> loginWithGithubToken(String code) async {
+    final res = await _client.post(
+      '/api/auth/github/token',
+      body: {
+        'code': code, // ✅ important
+      },
+    );
+    return res;
+  }
+
+
+
 }
+
 
 /// Internal class used by AuthService.login()
 class LoginResult {
@@ -64,7 +99,6 @@ class LoginResult {
 
       final res = await client.post(ApiEndpoints.login, body: body);
 
-      // success (statusCode 200)
       final data = res['data'] as Map<String, dynamic>? ?? {};
       return LoginResponse(
         status: LoginStatus.success,
@@ -77,14 +111,10 @@ class LoginResult {
     } on ApiException catch (e) {
       final msg = e.message;
 
-      // backend uses 403 with messages:
-      // - "Account not verified. OTP sent."
-      // - "Verification expired. OTP sent."
       if (e.statusCode == 403 && msg.contains('OTP sent')) {
         return LoginResponse(
           status: LoginStatus.otpRequired,
           message: msg,
-          token: null,
         );
       }
 
@@ -116,7 +146,7 @@ class LoginResponse {
   });
 }
 
-// ---------- OTP methods as extension ----------
+// ---------- OTP METHODS ----------
 
 extension OtpMethods on AuthService {
   Future<void> verifyOtp({

@@ -6,6 +6,7 @@ import '../features/auth/controllers/register_controller.dart';
 import '../features/auth/views/login_screen.dart';
 import '../features/auth/views/otp_screen.dart';
 import '../features/auth/views/register_screen.dart';
+import '../features/auth/views/welcome_screen.dart';
 import '../features/main/controllers/main_shell_controller.dart';
 import '../features/main/views/main_shell_screen.dart';
 import '../features/profile/controllers/profile_controller.dart';
@@ -17,6 +18,12 @@ class AppPages {
   AppPages._();
 
   static final routes = <GetPage>[
+    // ---------- AUTH FLOW ----------
+    GetPage(
+      name: AppRoutes.welcome,
+      page: () => const WelcomeScreen(),
+    ),
+
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginScreen(),
@@ -24,6 +31,7 @@ class AppPages {
         Get.put(LoginController());
       }),
     ),
+
     GetPage(
       name: AppRoutes.register,
       page: () => const RegisterScreen(),
@@ -31,6 +39,7 @@ class AppPages {
         Get.put(RegisterController());
       }),
     ),
+
     GetPage(
       name: AppRoutes.otp,
       page: () => const OtpScreen(),
@@ -38,6 +47,8 @@ class AppPages {
         Get.put(OtpController());
       }),
     ),
+
+    // ---------- MAIN APP ----------
     GetPage(
       name: AppRoutes.main,
       page: () => const MainShellScreen(),
@@ -46,6 +57,7 @@ class AppPages {
         Get.put(ProfileController());
       }),
     ),
+
     GetPage(
       name: AppRoutes.profileEdit,
       page: () => const ProfileEditScreen(),

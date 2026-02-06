@@ -12,4 +12,5 @@ class ApiEndpoints {
   // Profile
   static const String profileMe = '/api/profile/me';
   static const String profileUpdate = '/api/profile/update';
+  static const String profileMyPhotos = '/api/profile/posts/photos';
 }

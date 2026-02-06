@@ -5,40 +5,63 @@ import '../constants/app_text_styles.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String label;
-  final VoidCallback? onPressed;
   final bool isLoading;
+  final VoidCallback? onPressed;
 
   const PrimaryButton({
     super.key,
     required this.label,
-    this.onPressed,
     this.isLoading = false,
+    this.onPressed,
   });
+
+  bool get _isDisabled => onPressed == null || isLoading;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
       height: 52,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+      width: double.infinity,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: _isDisabled
+              ? const LinearGradient(
+            colors: [Color(0xFFD1D5DB), Color(0xFF9CA3AF)],
+          )
+              : const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              AppColors.primaryGradientStart,
+              AppColors.primaryGradientEnd,
+            ],
           ),
-          elevation: 1.5,
         ),
-        child: isLoading
-            ? const SizedBox(
-          width: 22,
-          height: 22,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.3,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        child: ElevatedButton(
+          onPressed: _isDisabled ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            disabledBackgroundColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-        )
-            : Text(label, style: AppTextStyles.button),
+          child: isLoading
+              ? const SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.3,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          )
+              : Text(
+            label,
+            style: AppTextStyles.button,
+          ),
+        ),
       ),
     );
   }

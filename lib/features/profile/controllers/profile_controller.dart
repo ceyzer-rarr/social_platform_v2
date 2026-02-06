@@ -6,6 +6,7 @@ import '../../auth/services/auth_service.dart';
 import '../models/profile_model.dart';
 import '../services/profile_service.dart';
 import '../../../routes/app_routes.dart';
+import '../models/profile_post_model.dart';
 
 class ProfileController extends GetxController {
   final ProfileService _profileService = ProfileService();
@@ -14,10 +15,14 @@ class ProfileController extends GetxController {
   final Rxn<ProfileModel> profile = Rxn<ProfileModel>();
   final isLoading = false.obs;
 
+  final RxList<ProfilePostModel> posts = <ProfilePostModel>[].obs;
+  final isPostsLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchProfile();
+    fetchMyPosts();
   }
 
   Future<void> fetchProfile() async {
@@ -40,6 +45,18 @@ class ProfileController extends GetxController {
     } finally {
       ApiClient.instance.setAuthToken(null);
       Get.offAllNamed(AppRoutes.login);
+    }
+  }
+
+  Future<void> fetchMyPosts() async {
+    isPostsLoading.value = true;
+    try {
+      final result = await _profileService.getMyPhotos();
+      posts.assignAll(result);
+    } catch (e) {
+      SnackbarHelper.showError('Failed to load posts');
+    } finally {
+      isPostsLoading.value = false;
     }
   }
 }

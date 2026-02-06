@@ -6,23 +6,23 @@ import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
 void main() {
-  runApp(const CignifiApp());
+  runApp(const SocialVibeApp());
 }
 
-class CignifiApp extends StatelessWidget {
-  const CignifiApp({super.key});
+class SocialVibeApp extends StatelessWidget {
+  const SocialVibeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Cignifi Auth',
+      title: 'SocialVibe',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.background,
         fontFamily: 'Roboto',
         useMaterial3: false,
       ),
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.welcome, // first screen
       getPages: AppPages.routes,
     );
   }
