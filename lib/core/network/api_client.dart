@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants/api_endpoints.dart';
@@ -31,35 +32,39 @@ class ApiClient {
 
   // ---------------- JSON POST ----------------
 
-  Future<Map<String, dynamic>> post(
-      String path, {
-        Map<String, dynamic>? body,
-      }) async {
+  Future<Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse(ApiEndpoints.baseUrl + path);
 
     try {
-      final response = await _client
-          .post(
-        uri,
-        headers: _buildHeaders(),
-        body: jsonEncode(body ?? {}),
-      )
+      final http.Response httpRes = await _client
+          .post(uri, headers: _buildHeaders(), body: jsonEncode(body ?? {}))
           .timeout(const Duration(seconds: 15));
 
-      final decoded =
-      response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      dynamic decoded;
+      try {
+        decoded = httpRes.body.isNotEmpty ? jsonDecode(httpRes.body) : null;
+      } catch (_) {
+        decoded = null;
+      }
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return decoded is Map<String, dynamic> ? decoded : {};
-      } else {
+      // Throw ApiException on non-2xx
+      if (httpRes.statusCode < 200 || httpRes.statusCode >= 300) {
         throw ApiException(
-          statusCode: response.statusCode,
+          statusCode: httpRes.statusCode,
           message: decoded is Map<String, dynamic>
               ? (decoded['message']?.toString() ?? 'Unknown error')
               : 'Something went wrong',
           errors: decoded is Map<String, dynamic> ? decoded['errors'] : null,
         );
       }
+
+      // Convert http.Response -> GetX Response
+      return Response(
+        body: decoded,
+        statusCode: httpRes.statusCode,
+        statusText: httpRes.reasonPhrase,
+        headers: httpRes.headers,
+      );
     } on SocketException {
       throw ApiException(message: 'Cannot connect to the server.');
     } on HttpException {
@@ -76,14 +81,12 @@ class ApiClient {
 
     try {
       final response = await _client
-          .get(
-        uri,
-        headers: _buildHeaders(),
-      )
+          .get(uri, headers: _buildHeaders())
           .timeout(const Duration(seconds: 15));
 
-      final decoded =
-      response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      final decoded = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : null;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded is Map<String, dynamic> ? decoded : {};
@@ -108,10 +111,10 @@ class ApiClient {
   // ---------------- MULTIPART POST (for picture + cover) ----------------
 
   Future<Map<String, dynamic>> postMultipart(
-      String path, {
-        Map<String, String>? fields,
-        Map<String, File>? files,
-      }) async {
+    String path, {
+    Map<String, String>? fields,
+    Map<String, File>? files,
+  }) async {
     final uri = Uri.parse(ApiEndpoints.baseUrl + path);
 
     final request = http.MultipartRequest('POST', uri);
@@ -128,10 +131,7 @@ class ApiClient {
     if (files != null) {
       for (final entry in files.entries) {
         request.files.add(
-          await http.MultipartFile.fromPath(
-            entry.key,
-            entry.value.path,
-          ),
+          await http.MultipartFile.fromPath(entry.key, entry.value.path),
         );
       }
     }
@@ -139,8 +139,9 @@ class ApiClient {
     try {
       final streamed = await request.send();
       final response = await http.Response.fromStream(streamed);
-      final decoded =
-      response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      final decoded = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : null;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded is Map<String, dynamic> ? decoded : {};
@@ -170,8 +171,9 @@ class ApiClient {
           .delete(uri, headers: _buildHeaders())
           .timeout(const Duration(seconds: 15));
 
-      final decoded =
-      response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      final decoded = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : null;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded is Map<String, dynamic> ? decoded : {};

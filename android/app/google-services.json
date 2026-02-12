@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "410298852575",
+    "project_id": "hushstack-52ddd",
+    "storage_bucket": "hushstack-52ddd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410298852575:android:f4cb78a4cacbb51133356a",
+        "android_client_info": {
+          "package_name": "com.example.social_platform_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYf_OnQ5NO2pwCxd7oo_ku18vZ3RHy9-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

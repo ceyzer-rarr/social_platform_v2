@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/utils/snackbar_helper.dart';
-import '../../../core/utils/validators.dart';
 import '../services/auth_service.dart';
 import '../../../routes/app_routes.dart';
 
@@ -22,6 +21,19 @@ class RegisterController extends GetxController {
   final isPasswordObscured = true.obs;
   final isConfirmPasswordObscured = true.obs;
 
+  /// Field errors
+  final usernameError = RxnString();
+  final emailError = RxnString();
+  final passwordError = RxnString();
+  final confirmPasswordError = RxnString();
+
+  void clearErrors() {
+    usernameError.value = null;
+    emailError.value = null;
+    passwordError.value = null;
+    confirmPasswordError.value = null;
+  }
+
   @override
   void onClose() {
     usernameController.dispose();
@@ -34,47 +46,61 @@ class RegisterController extends GetxController {
   }
 
   Future<void> submit() async {
-    // 1. validate form
+    clearErrors();
+
     if (!(formKey.currentState?.validate() ?? false)) return;
 
-    // 2. confirm password match
     if (passwordController.text.trim() !=
         confirmPasswordController.text.trim()) {
-      SnackbarHelper.showError('Password and confirmation do not match');
+      confirmPasswordError.value = 'Passwords do not match';
       return;
     }
 
     isLoading.value = true;
 
-    final email = emailController.text.trim();
-
     try {
-      // 3. call API
       await _authService.register(
         username: usernameController.text.trim(),
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
-        email: email,
+        email: emailController.text.trim(),
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
       );
 
-      // 4. show message
       SnackbarHelper.showSuccess(
-          'Registered successfully. OTP sent to your email.');
+        'Registered successfully. OTP sent to your email.',
+      );
 
-      // 5. navigate to OTP screen and pass email
       Get.toNamed(
         AppRoutes.otp,
-        arguments: email,
+        arguments: emailController.text.trim(),
       );
     } catch (e) {
-      SnackbarHelper.showError(e.toString());
+      _handleRegisterError(e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
-  // (optional) you can also add small helpers like:
-  String? validateEmail(String? v) => Validators.email(v);
+  void _handleRegisterError(String message) {
+    final msg = message.toLowerCase();
+
+    if (msg.contains('username')) {
+      usernameError.value = 'Username already taken';
+      return;
+    }
+
+    if (msg.contains('email')) {
+      emailError.value = 'Email already registered';
+      return;
+    }
+
+    if (msg.contains('password')) {
+      passwordError.value = 'Password is too weak';
+      return;
+    }
+
+    emailError.value = 'Registration failed. Try again.';
+  }
 }

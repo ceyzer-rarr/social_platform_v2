@@ -58,65 +58,35 @@ class LoginScreen extends GetView<LoginController> {
                     key: controller.formKey,
                     child: Column(
                       children: [
-                        AppTextField(
+                        Obx(() => AppTextField(
                           label: 'Email',
                           controller: controller.emailController,
                           keyboardType: TextInputType.emailAddress,
                           validator: controller.validateEmail,
-                        ),
+                          errorText: controller.emailError.value,
+                          onChanged: (_) => controller.emailError.value = null,
+                        )),
                         const SizedBox(height: 16),
 
-                        Obx(
-                          () => TextFormField(
-                            controller: controller.passwordController,
-                            obscureText: controller.isPasswordObscured.value,
-                            validator: controller.validatePassword,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textPrimary,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: AppColors.inputBorder,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: AppColors.inputBorder,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primary,
-                                  width: 1.2,
-                                ),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  controller.isPasswordObscured.value
-                                      ? Icons.visibility_off_rounded
-                                      : Icons.visibility_rounded,
-                                ),
-                                onPressed: () {
-                                  controller.isPasswordObscured.value =
-                                      !controller.isPasswordObscured.value;
-                                },
-                              ),
+                        Obx(() => AppTextField(
+                          label: 'Password',
+                          controller: controller.passwordController,
+                          obscureText: controller.isPasswordObscured.value,
+                          validator: controller.validatePassword,
+                          errorText: controller.passwordError.value,
+                          onChanged: (_) => controller.passwordError.value = null,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              controller.isPasswordObscured.value
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
                             ),
+                            onPressed: () {
+                              controller.isPasswordObscured.toggle();
+                            },
                           ),
-                        ),
+                        )),
+
 
                         const SizedBox(height: 12),
 
@@ -176,7 +146,7 @@ class LoginScreen extends GetView<LoginController> {
                         ),
                         text: 'Continue with Google',
                         onTap: () {
-                          // TODO: Google sign-in
+                          controller.signInWithGoogle();
                         },
                       ),
                       const SizedBox(height: 12),

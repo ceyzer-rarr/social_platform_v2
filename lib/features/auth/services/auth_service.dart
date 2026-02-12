@@ -1,3 +1,7 @@
+// import 'package:http/http.dart';
+
+import 'package:get/get_connect/http/src/response/response.dart';
+
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_client.dart' show ApiException;
@@ -53,11 +57,11 @@ class AuthService {
 
   // ---------- GOOGLE LOGIN ----------
 
-  Future<Map<String, dynamic>> loginWithGoogleToken(String idToken) async {
+  Future<Response> loginWithGoogleToken(String accessToken) async {
     final res = await _client.post(
-      '/api/auth/google/token',
+      ApiEndpoints.googleLogin,
       body: {
-        'id_token': idToken, // ✅ important
+        'access_token': accessToken,
       },
     );
     return res;
@@ -66,15 +70,15 @@ class AuthService {
 
   // ---------- GITHUB LOGIN ----------
 
-  Future<Map<String, dynamic>> loginWithGithubToken(String code) async {
-    final res = await _client.post(
-      '/api/auth/github/token',
-      body: {
-        'code': code, // ✅ important
-      },
-    );
-    return res;
-  }
+  // Future<Map<String, dynamic>> loginWithGithubToken(String code) async {
+  //   final res = await _client.post(
+  //     '/api/auth/github/token',
+  //     body: {
+  //       'code': code, // ✅ important
+  //     },
+  //   );
+  //   return res;
+  // }
 
 
 
@@ -99,7 +103,8 @@ class LoginResult {
 
       final res = await client.post(ApiEndpoints.login, body: body);
 
-      final data = res['data'] as Map<String, dynamic>? ?? {};
+      // final data = res['data'] as Map<String, dynamic>? ?? {};
+      final data = res.body['data'] ?? {};
       return LoginResponse(
         status: LoginStatus.success,
         message: 'Login successful',

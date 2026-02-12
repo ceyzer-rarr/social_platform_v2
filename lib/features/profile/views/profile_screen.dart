@@ -110,10 +110,19 @@ class _ProfileHeader extends StatelessWidget {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                _StatItem(label: 'Posts', value: '124'),
-                _StatItem(label: 'Followers', value: '2.5K'),
-                _StatItem(label: 'Following', value: '892'),
+              children: [
+                _StatItem(
+                  label: 'Posts',
+                  value: profile.postsCount ?? '0',
+                ),
+                _StatItem(
+                  label: 'Followers',
+                  value: profile.followersCount ?? '0',
+                ),
+                _StatItem(
+                  label: 'Following',
+                  value: profile.followingsCount ?? '0',
+                ),
               ],
             ),
           ),
@@ -365,45 +374,3 @@ class _PostsGrid extends GetView<ProfileController> {
   }
 }
 
-
-// class _BottomActions extends StatelessWidget {
-//   final VoidCallback onLogout;
-//
-//   const _BottomActions({required this.onLogout});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         const Divider(height: 1),
-//         ListTile(
-//           leading: const Icon(Icons.privacy_tip_outlined,
-//               color: AppColors.textPrimary),
-//           title: const Text('Privacy'),
-//           onTap: () {
-//             // TODO: implement
-//           },
-//         ),
-//         const Divider(height: 1),
-//         ListTile(
-//           leading: const Icon(Icons.info_outline,
-//               color: AppColors.textPrimary),
-//           title: const Text('Information'),
-//           onTap: () {
-//             // TODO: implement
-//           },
-//         ),
-//         const Divider(height: 1),
-//         ListTile(
-//           leading:
-//           const Icon(Icons.logout, color: Colors.redAccent),
-//           title: const Text(
-//             'Log out',
-//             style: TextStyle(color: Colors.redAccent),
-//           ),
-//           onTap: onLogout,
-//         ),
-//       ],
-//     );
-//   }
-// }

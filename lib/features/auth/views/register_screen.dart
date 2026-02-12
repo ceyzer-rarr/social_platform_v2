@@ -24,9 +24,11 @@ class RegisterScreen extends GetView<RegisterController> {
         backgroundColor: AppColors.background,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.black,),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+            color: Colors.black,
+          ),
         ),
       ),
       body: SafeArea(
@@ -34,19 +36,13 @@ class RegisterScreen extends GetView<RegisterController> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 430, minHeight: size.height * 0.9),
+              constraints: BoxConstraints(
+                maxWidth: 430,
+                minHeight: size.height * 0.9,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back
-                  // IconButton(
-                  //   onPressed: () => Get.back(),
-                  //   icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                  //   padding: EdgeInsets.zero,
-                  //   constraints: const BoxConstraints(),
-                  // ),
-                  const SizedBox(height: 8),
-
                   const Text('Create account', style: AppTextStyles.title),
                   const SizedBox(height: 4),
                   const Text(
@@ -59,24 +55,33 @@ class RegisterScreen extends GetView<RegisterController> {
                     key: controller.formKey,
                     child: Column(
                       children: [
-                        AppTextField(
+                        /// Username
+                        Obx(() => AppTextField(
                           label: 'Username',
                           controller: controller.usernameController,
-                          validator: (v) =>
-                              Validators.requiredField(v, fieldName: 'Username'),
-                        ),
+                          validator: (v) => Validators.requiredField(
+                            v,
+                            fieldName: 'Username',
+                          ),
+                          errorText: controller.usernameError.value,
+                          onChanged: (_) =>
+                          controller.usernameError.value = null,
+                        )),
                         const SizedBox(height: 16),
 
+                        /// First + Last name
                         Row(
                           children: [
                             Expanded(
                               child: AppTextField(
                                 label: 'First name',
-                                controller: controller.firstNameController,
-                                validator: (v) => Validators.requiredField(
-                                  v,
-                                  fieldName: 'First name',
-                                ),
+                                controller:
+                                controller.firstNameController,
+                                validator: (v) =>
+                                    Validators.requiredField(
+                                      v,
+                                      fieldName: 'First name',
+                                    ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -84,77 +89,104 @@ class RegisterScreen extends GetView<RegisterController> {
                               child: AppTextField(
                                 label: 'Last name',
                                 controller: controller.lastNameController,
-                                validator: (v) => Validators.requiredField(
-                                  v,
-                                  fieldName: 'Last name',
-                                ),
+                                validator: (v) =>
+                                    Validators.requiredField(
+                                      v,
+                                      fieldName: 'Last name',
+                                    ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
 
-                        AppTextField(
+                        /// Email
+                        Obx(() => AppTextField(
                           label: 'Email',
                           controller: controller.emailController,
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType:
+                          TextInputType.emailAddress,
                           validator: Validators.email,
-                        ),
+                          errorText:
+                          controller.emailError.value,
+                          onChanged: (_) =>
+                          controller.emailError.value = null,
+                        )),
                         const SizedBox(height: 16),
 
-                        // Password + confirm
-                        Obx(
-                              () => Column(
-                            children: [
-                              TextFormField(
-                                controller: controller.passwordController,
-                                obscureText: controller.isPasswordObscured.value,
-                                decoration: _passwordDecoration(
-                                  'Password',
-                                  controller.isPasswordObscured.value,
-                                      () {
-                                    controller.isPasswordObscured.value =
-                                    !controller.isPasswordObscured.value;
-                                  },
-                                ),
-                                validator: (v) => Validators.minLength(
-                                  v,
-                                  6,
-                                  fieldName: 'Password',
-                                ),
+                        /// Password
+                        Obx(() => AppTextField(
+                          label: 'Password',
+                          controller:
+                          controller.passwordController,
+                          obscureText:
+                          controller.isPasswordObscured.value,
+                          validator: (v) =>
+                              Validators.minLength(
+                                v,
+                                6,
+                                fieldName: 'Password',
                               ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: controller.confirmPasswordController,
-                                obscureText:
-                                controller.isConfirmPasswordObscured.value,
-                                decoration: _passwordDecoration(
-                                  'Confirm Password',
-                                  controller.isConfirmPasswordObscured.value,
-                                      () {
-                                    controller.isConfirmPasswordObscured.value =
-                                    !controller.isConfirmPasswordObscured.value;
-                                  },
-                                ),
-                                validator: (v) => Validators.minLength(
-                                  v,
-                                  6,
-                                  fieldName: 'Confirm Password',
-                                ),
-                              ),
-                            ],
+                          errorText:
+                          controller.passwordError.value,
+                          onChanged: (_) =>
+                          controller.passwordError.value =
+                          null,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              controller.isPasswordObscured.value
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
+                            ),
+                            onPressed:
+                            controller.isPasswordObscured
+                                .toggle,
                           ),
-                        ),
+                        )),
+                        const SizedBox(height: 16),
+
+                        /// Confirm Password
+                        Obx(() => AppTextField(
+                          label: 'Confirm Password',
+                          controller: controller
+                              .confirmPasswordController,
+                          obscureText: controller
+                              .isConfirmPasswordObscured.value,
+                          validator: (v) =>
+                              Validators.minLength(
+                                v,
+                                6,
+                                fieldName: 'Confirm Password',
+                              ),
+                          errorText: controller
+                              .confirmPasswordError.value,
+                          onChanged: (_) =>
+                          controller
+                              .confirmPasswordError.value =
+                          null,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              controller
+                                  .isConfirmPasswordObscured
+                                  .value
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
+                            ),
+                            onPressed: controller
+                                .isConfirmPasswordObscured
+                                .toggle,
+                          ),
+                        )),
 
                         const SizedBox(height: 24),
 
-                        Obx(
-                              () => PrimaryButton(
-                            label: 'Sign up',
-                            isLoading: controller.isLoading.value,
-                            onPressed: controller.submit,
-                          ),
-                        ),
+                        /// Submit
+                        Obx(() => PrimaryButton(
+                          label: 'Sign up',
+                          isLoading:
+                          controller.isLoading.value,
+                          onPressed: controller.submit,
+                        )),
                       ],
                     ),
                   ),
@@ -166,8 +198,10 @@ class RegisterScreen extends GetView<RegisterController> {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('or continue with',
-                            style: AppTextStyles.subtitle),
+                        child: Text(
+                          'or continue with',
+                          style: AppTextStyles.subtitle,
+                        ),
                       ),
                       Expanded(child: Divider()),
                     ],
@@ -180,26 +214,21 @@ class RegisterScreen extends GetView<RegisterController> {
                         icon: const FaIcon(
                           FontAwesomeIcons.google,
                           size: 20,
-                          color: Color(0xFFDB4437), // Google red
+                          color: Color(0xFFDB4437),
                         ),
                         text: 'Continue with Google',
-                        onTap: () {
-                          // TODO: Google sign-in
-                        },
+                        onTap: () {},
                       ),
                       const SizedBox(height: 12),
                       SocialIconButton(
                         icon: const FaIcon(
                           FontAwesomeIcons.github,
                           size: 20,
-                          color: Colors.black, // GitHub black
+                          color: Colors.black,
                         ),
                         text: 'Continue with GitHub',
-                        onTap: () {
-                          // TODO: GitHub sign-in
-                        },
+                        onTap: () {},
                       ),
-
                     ],
                   ),
 
@@ -223,42 +252,6 @@ class RegisterScreen extends GetView<RegisterController> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  InputDecoration _passwordDecoration(
-      String label,
-      bool obscured,
-      VoidCallback toggle,
-      ) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: AppColors.textPrimary,
-      ),
-      filled: true,
-      fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.inputBorder),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.inputBorder),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
-      ),
-      suffixIcon: IconButton(
-        icon: Icon(
-          obscured ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-        ),
-        onPressed: toggle,
       ),
     );
   }

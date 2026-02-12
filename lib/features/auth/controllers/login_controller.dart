@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social_platform_app/features/home/views/home_screen.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/utils/snackbar_helper.dart';
 import '../../../core/utils/validators.dart';
 import '../services/auth_service.dart';
 import '../../../routes/app_routes.dart';
+import '../services/google_sigin_service.dart';
 
 class LoginController extends GetxController {
   final AuthService _authService = AuthService();
@@ -18,57 +20,123 @@ class LoginController extends GetxController {
   final isLoading = false.obs;
   final isPasswordObscured = true.obs;
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
+  final emailError = RxnString();
+  final passwordError = RxnString();
+
+  void clearErrors() {
+    emailError.value = null;
+    passwordError.value = null;
   }
 
+  @override
+  // void onClose() {
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   super.onClose();
+  // }
   Future<void> submit() async {
+    clearErrors();
+
     if (!(formKey.currentState?.validate() ?? false)) return;
 
     isLoading.value = true;
-    final email = emailController.text.trim();
-    final password = passwordController.text;
 
     try {
-      final result =
-      await _authService.login(email: email, password: password).execute();
+      final result = await _authService
+          .login(
+            email: emailController.text.trim(),
+            password: passwordController.text,
+          )
+          .execute();
 
       switch (result.status) {
         case LoginStatus.success:
-          SnackbarHelper.showSuccess('Login successful');
-
-          // store token in ApiClient so profile/me + others are authenticated
-          if (result.token != null) {
-            ApiClient.instance.setAuthToken(result.token!);
-          }
-
-          // Later: save token in secure storage for auto-login
-
-          // Go to main shell (home + profile bottom nav)
+          ApiClient.instance.setAuthToken(result.token!);
           Get.offAllNamed(AppRoutes.main);
           break;
 
-        case LoginStatus.otpRequired:
-          SnackbarHelper.showError(result.message);
-
-          // Go to OTP screen and pass email.
-          Get.toNamed(
-            AppRoutes.otp,
-            arguments: email,
-          );
+        case LoginStatus.error:
+          _handleLoginError(result.message);
           break;
 
-        case LoginStatus.error:
-          SnackbarHelper.showError(result.message);
+        case LoginStatus.otpRequired:
+          emailError.value = 'Please verify your account first';
           break;
       }
     } catch (e) {
-      SnackbarHelper.showError('Unexpected error: $e');
+      emailError.value = 'Something went wrong';
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void _handleLoginError(String message) {
+    final msg = message.toLowerCase();
+
+    if (msg.contains('email')) {
+      emailError.value = 'This email is not registered';
+      return;
+    }
+
+    if (msg.contains('password')) {
+      passwordError.value = 'Incorrect password';
+      return;
+    }
+
+    // fallback
+    emailError.value = 'Invalid email or password';
+    passwordError.value = 'Invalid email or password';
+  }
+
+  String _mapLoginError(String message) {
+    final msg = message.toLowerCase();
+
+    if (msg.contains('email') && msg.contains('not')) {
+      return 'This email is not registered';
+    }
+
+    if (msg.contains('password')) {
+      return 'Incorrect password';
+    }
+
+    if (msg.contains('verify') || msg.contains('otp')) {
+      return 'Please verify your account first';
+    }
+
+    if (msg.contains('blocked') || msg.contains('too many')) {
+      return 'Too many attempts. Try again later';
+    }
+
+    return 'Invalid email or password';
+  }
+
+  Future<void> loginGoogle(String accessToken) async {
+    try {
+      final response = await _authService.loginWithGoogleToken(accessToken);
+      final status = response.body['status'];
+
+      if (status == 200) {
+        Get.offAllNamed(AppRoutes.home);
+      } else {
+        SnackbarHelper.showError(response.body['message']);
+      }
+    } catch (e) {}
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final accessToken = await GoogleSignService.instance
+          .signInAndGetAccessToken();
+
+      // if we rethrow in the service, we usually won't even reach here on error
+      if (accessToken == null) {
+        print('Google accessToken is null (user canceled?).');
+        return;
+      }
+
+      await _authService.loginWithGoogleToken(accessToken);
+    } catch (e) {
+      print('signInWithGoogle error: $e');
     }
   }
 
