@@ -13,4 +13,13 @@ class ApiEndpoints {
   static const String profileMe = '/api/profile/me';
   static const String profileUpdate = '/api/profile/update';
   static const String profileMyPhotos = '/api/profile/posts/photos';
+
+  // Posts
+  static const String createPost = '/api/posts';
+
+  // Google
+  static const String googleLogin = '/api/auth/google/token';
+
+  static const String homeFeed = '/api/home-feed';
+  static String likeToggle(int postId) => '/api/posts/$postId/like-toggle';
 }

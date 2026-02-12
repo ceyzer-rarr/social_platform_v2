@@ -12,6 +12,9 @@ class ProfileModel {
   final String? nationality;
   final String? contactUrl;
   final String? address;
+  final String? followersCount;
+  final String? followingsCount;
+  final String? postsCount;
 
   ProfileModel({
     required this.username,
@@ -27,6 +30,9 @@ class ProfileModel {
     this.nationality,
     this.contactUrl,
     this.address,
+    this.followersCount,
+    this.followingsCount,
+    this.postsCount
   });
 
   String get fullName {
@@ -53,6 +59,9 @@ class ProfileModel {
       nationality: json['nationality']?.toString(),
       contactUrl: json['contact_url']?.toString(),
       address: json['address']?.toString(),
+      followersCount: json['followers_count']?.toString(),
+      followingsCount: json['following_count']?.toString(),
+      postsCount: json['posts_count']?.toString(),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../constants/app_colors.dart';
 
 class AppTextField extends StatelessWidget {
@@ -13,6 +12,10 @@ class AppTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
 
+  // ✅ NEW
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
+
   const AppTextField({
     super.key,
     required this.label,
@@ -24,10 +27,14 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.onTap,
+    this.errorText,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final hasError = errorText != null;
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -36,8 +43,10 @@ class AppTextField extends StatelessWidget {
       maxLines: obscureText ? 1 : maxLines,
       readOnly: readOnly,
       onTap: onTap,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
+        errorText: errorText,
         labelStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -47,18 +56,35 @@ class AppTextField extends StatelessWidget {
         fillColor: Colors.white,
         contentPadding:
         const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.inputBorder),
-        ),
+
+        // ✅ NORMAL
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.inputBorder),
+          borderSide: BorderSide(
+            color: hasError ? Colors.red : AppColors.inputBorder,
+          ),
         ),
+
+        // ✅ FOCUSED
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
+          borderSide: BorderSide(
+            color: hasError ? Colors.red : AppColors.primary,
+            width: 1.2,
+          ),
         ),
+
+        // ✅ ERROR
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1.2),
+        ),
+
         suffixIcon: suffixIcon,
       ),
     );
