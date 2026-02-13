@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../home/views/home_screen.dart';
+import '../../notifications/views/notification_screen.dart';
 import '../../profile/views/profile_screen.dart';
 import '../controllers/main_shell_controller.dart';
 import '../../post/views/new_post_screen.dart'; // NEW
@@ -22,7 +23,7 @@ class MainShellScreen extends GetView<MainShellController> {
             // TODO: replace with real SearchScreen
             const Center(child: Text('Search')),
             // TODO: replace with real NotificationScreen
-            const Center(child: Text('Notifications')),
+            NotificationScreen(),
             const ProfileScreen(),
           ],
         ),

@@ -1,7 +1,7 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const String baseUrl = 'http://10.0.2.2:8000'; // ← change if needed
+  static const String baseUrl = 'https://social-platform.hushstack.me'; // ← change if needed
 
   static const String register = '/api/auth/register';
   static const String login = '/api/auth/login';
@@ -22,4 +22,5 @@ class ApiEndpoints {
 
   static const String homeFeed = '/api/home-feed';
   static String likeToggle(int postId) => '/api/posts/$postId/like-toggle';
+  static const String notifications = '/api/notifications';
 }
