@@ -44,7 +44,7 @@ class OtpScreen extends GetView<OtpController> {
                     child: Column(
                       children: const [
                         Text(
-                          'cignifi',
+                          '',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
