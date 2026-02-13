@@ -21,7 +21,14 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchProfile();
+
+    final arg = Get.arguments;
+    if (arg is ProfileModel) {
+      profile.value = arg; // show updated data instantly
+    } else {
+      fetchProfile();
+    }
+
     fetchMyPosts();
   }
 

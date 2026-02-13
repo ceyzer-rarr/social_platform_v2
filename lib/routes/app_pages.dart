@@ -10,6 +10,7 @@ import '../features/profile/controllers/profile_controller.dart';
 import '../features/profile/controllers/profile_edit_controller.dart';
 import '../features/profile/views/profile_edit_screen.dart';
 import '../features/auth/bindings/auth_binding.dart';
+import '../features/profile/views/profile_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -40,6 +41,13 @@ class AppPages {
       binding: AuthBinding(), // same binding, reused
     ),
 
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => const ProfileScreen(),
+      binding: BindingsBuilder(() {
+        Get.put(ProfileController());
+      }),
+    ),
     // ---------- MAIN APP ----------
     GetPage(
       name: AppRoutes.main,

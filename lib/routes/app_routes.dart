@@ -13,4 +13,5 @@ class AppRoutes {
   static const String main = '/main';
   static const String profileEdit = '/profile-edit';
   static const String home = '/home';
+  static const profile = '/profile';
 }

@@ -36,7 +36,9 @@ class ProfileEditScreen extends GetView<ProfileEditController> {
         centerTitle: true,
         actions: [
           TextButton(
-            onPressed: controller.save,
+            onPressed: () async {
+              await controller.save(); // <-- IMPORTANT
+            },
             child: const Text(
               'Done',
               style: TextStyle(

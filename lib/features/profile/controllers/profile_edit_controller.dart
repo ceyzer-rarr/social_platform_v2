@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/utils/snackbar_helper.dart';
+import '../../../routes/app_routes.dart';
 import '../../profile/models/profile_model.dart';
 import '../../profile/services/profile_service.dart';
 
@@ -131,8 +132,14 @@ class ProfileEditController extends GetxController {
       );
 
       originalProfile = updated;
-      SnackbarHelper.showSuccess('Profile updated successfully');
-      Get.back(result: updated);
+      // SnackbarHelper.showSuccess('Profile updated successfully');
+      // Get.back(result: updated);
+      // SnackbarHelper.showSuccess('Profile updated successfully');
+
+      Get.offAllNamed(
+        AppRoutes.main,
+        arguments: {'tabIndex': 3, 'profile': updated},
+      );
     } catch (e) {
       SnackbarHelper.showError('Failed to update profile: $e');
     } finally {

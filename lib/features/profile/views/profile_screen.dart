@@ -61,8 +61,14 @@ class ProfileScreen extends GetView<ProfileController> {
                     const SizedBox(height: 16),
                     _ProfileBioSection(profile: profile),
                     const SizedBox(height: 12),
-                    _EditProfileButton(onTap: () {
-                      Get.toNamed(AppRoutes.profileEdit);
+                    _EditProfileButton(onTap: () async {
+                      final updated = await Get.toNamed(AppRoutes.profileEdit);
+
+                      if (updated is ProfileModel) {
+                        controller.profile.value = updated;
+                      } else {
+                        await controller.fetchProfile();
+                      }
                     }),
                     const SizedBox(height: 16),
                     const _ProfileTabs(),
