@@ -1,7 +1,7 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const String baseUrl = 'https://social-platform.hushstack.me'; // ← change if needed
+  static const String baseUrl = 'https://social-api.hushstackcambodia.site'; // ← change if needed
 
   static const String register = '/api/auth/register';
   static const String login = '/api/auth/login';
