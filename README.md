@@ -223,9 +223,7 @@ flutter pub get
 Update the API client configuration in `lib/core/network/api_client.dart`:
 ```dart
 class ApiClient {
-  static const String baseUrl = 'http://your-laravel-api.com/api';
-  // For Android emulator: http://10.0.2.2:8000/api
-  // For iOS simulator: http://localhost:8000/api
+  static const String baseUrl = 'https://social-api.hushstackcambodia.site/api';
 }
 ```
 
@@ -340,7 +338,7 @@ Notifications feature:
 
 ### **Base URL**
 ```
-http://your-laravel-api.com/api
+https://social-api.hushstackcambodia.site/api
 ```
 
 ### **Authentication Endpoints**
@@ -553,11 +551,10 @@ Solution: flutter devices
 
 **Issue:** `Connection refused to Laravel API`
 ```bash
-Solution: - Verify Laravel server is running
-          - Check API base URL configuration
-          - For Android emulator: Use 10.0.2.2 instead of localhost
-          - For iOS simulator: Use localhost or your machine IP
-          - Example: http://10.0.2.2:8000/api
+Solution: - Verify API server at https://social-api.hushstackcambodia.site is accessible
+          - Check internet connection on device
+          - Verify API base URL is correctly configured
+          - Check API response with Postman or similar tool
 ```
 
 **Issue:** `Image picker not working`
