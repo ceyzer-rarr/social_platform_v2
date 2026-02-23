@@ -412,50 +412,6 @@ The app uses **GetX routing** with named routes defined in `lib/routes/app_route
 
 ---
 
-## 🚀 Laravel Backend Setup
-
-### Prerequisites for Backend:
-- PHP 8.1+ 
-- Composer
-- MySQL/MariaDB
-- Laravel 10+
-
-### Quick Setup:
-```bash
-# 1. Create Laravel project
-composer create-project laravel/laravel social_platform_backend
-
-# 2. Install required packages
-composer require tymon/jwt-auth    # JWT authentication
-composer require laravel/cors      # CORS support
-
-# 3. Create database
-mysql -u root -e "CREATE DATABASE social_platform;"
-
-# 4. Configure .env
-DB_DATABASE=social_platform
-DB_USERNAME=root
-DB_PASSWORD=
-
-# 5. Run migrations
-php artisan migrate
-
-# 6. Generate JWT secret
-php artisan jwt:secret
-
-# 7. Start server
-php artisan serve --port=8000
-```
-
-### Required Database Tables:
-- `users` - User information and authentication
-- `posts` - User posts with images
-- `likes` - Posts likes tracking
-- `notifications` - User notifications
-- `otp_codes` - OTP verification storage
-
----
-
 ## 🎮 Getting Started
 
 ### First Time Setup:
