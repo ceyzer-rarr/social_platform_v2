@@ -6,7 +6,7 @@ A comprehensive Flutter-based social networking application built with modern ar
 **Version:** 1.0.0+1  
 **Framework:** Flutter 3.10.7+  
 **State Management:** GetX  
-**Backend:** Firebase & Custom REST API
+**Backend:** Laravel REST API
 
 ---
 
@@ -50,7 +50,6 @@ A comprehensive Flutter-based social networking application built with modern ar
 - **Login System:** Secure login with email and password
 - **OTP Verification:** Two-factor authentication for account security
 - **Resend OTP:** Option to request new OTP if not received
-- **Google Sign-In:** Third-party authentication integration
 - **Logout:** Secure logout functionality
 - **Password Management:** Secure credential handling
 
@@ -102,8 +101,14 @@ The project follows **Clean Architecture** with **MVVM** (Model-View-ViewModel) 
 └─────────────────────────────────────────┘
               ↓
 ┌─────────────────────────────────────────┐
-│      External Services                  │
-│   (Firebase, HTTP API, Local Cache)     │
+│      Laravel REST API                   │
+│   (Authentication, Posts, Users,        │
+│    Notifications, Storage)               │
+└─────────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────────┐
+│         MySQL Database                  │
+│   (User Data, Posts, Notifications)     │
 └─────────────────────────────────────────┘
 ```
 
@@ -185,12 +190,13 @@ Before running the app, ensure you have the following installed:
    - **Optional:** Physical device for testing
 
 ### 4. **Backend Services**
-   - **Firebase:** Firebase project with authentication enabled
-   - **REST API:** Backend server with following endpoints:
-     - Authentication (register, login, OTP)
-     - Post management (CRUD operations)
-     - User management (profile, preferences)
-     - Notifications
+   - **Laravel API Server:** Backend REST API with following capabilities:
+     - Authentication API (register, login, OTP verification)
+     - Post management endpoints (CRUD operations)
+     - User management endpoints (profile, settings)
+     - Notification delivery system
+   - **Database:** MySQL/MariaDB for data persistence
+   - **API Base URL:** Configure in your Flutter app (e.g., `http://localhost:8000/api`)
 
 ### 5. **System Requirements**
    - Windows/macOS/Linux development machine
@@ -213,21 +219,19 @@ cd social_platform_app
 flutter pub get
 ```
 
-### Step 3: Firebase Setup
-1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
-2. Add Android and iOS apps to your Firebase project
-3. Download Google Services files:
-   - `google-services.json` for Android → `android/app/`
-   - `GoogleService-Info.plist` for iOS → `ios/Runner/`
-4. Enable required services:
-   - Authentication (Email/Password, Google Sign-In)
-   - Firestore Database (if needed)
-   - Cloud Messaging
-   - Storage
+### Step 3: Configure API Base URL
+Update the API client configuration in `lib/core/network/api_client.dart`:
+```dart
+class ApiClient {
+  static const String baseUrl = 'http://your-laravel-api.com/api';
+  // For Android emulator: http://10.0.2.2:8000/api
+  // For iOS simulator: http://localhost:8000/api
+}
+```
 
 ### Step 4: Configure Environment
 ```bash
-# Get dependencies again to ensure Firebase is properly linked
+# Get dependencies again
 flutter pub get
 
 # For Android
@@ -262,11 +266,8 @@ flutter run -d macos
 | Package | Version | Purpose |
 |---------|---------|---------|
 | **GetX** | ^4.6.6 | State management & routing |
-| **http** | ^1.2.0 | HTTP client for API calls |
-| **google_sign_in** | ^7.2.0 | Google authentication |
-| **flutter_web_auth_2** | ^5.0.1 | Web-based authentication |
-| **firebase_core** | ^4.4.0 | Firebase initialization |
-| **image_picker** | ^1.0.7 | Image selection from device |
+| **http** | ^1.2.0 | HTTP client for API calls to Laravel backend |
+| **image_picker** | ^1.0.7 | Image selection from device for posts |
 | **font_awesome_flutter** | ^10.7.0 | Font Awesome icons |
 | **cupertino_icons** | ^1.0.8 | iOS-style icons |
 
@@ -337,39 +338,57 @@ Notifications feature:
 
 ## 🔌 API Endpoints
 
+### **Base URL**
+```
+http://your-laravel-api.com/api
+```
+
 ### **Authentication Endpoints**
 ```
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/verify-otp
-POST /api/auth/resend-otp
-POST /api/auth/logout
-POST /api/auth/google-signin
+POST   /auth/register           # User registration
+POST   /auth/login              # User login
+POST   /auth/verify-otp         # OTP verification
+POST   /auth/resend-otp         # Resend OTP code
+POST   /auth/logout             # User logout
+GET    /auth/profile            # Get current user profile
 ```
 
 ### **Post Endpoints**
 ```
-GET  /api/posts                 # Get all posts
-POST /api/posts                 # Create new post
-GET  /api/posts/:id             # Get specific post
-PUT  /api/posts/:id             # Update post
-DELETE /api/posts/:id           # Delete post
-POST /api/posts/:id/like        # Like a post
-DELETE /api/posts/:id/like      # Unlike a post
+GET    /posts                   # Get all posts (paginated)
+POST   /posts                   # Create new post (with image)
+GET    /posts/:id               # Get specific post details
+PUT    /posts/:id               # Update post
+DELETE /posts/:id               # Delete post
+POST   /posts/:id/like          # Like a post
+DELETE /posts/:id/like          # Unlike a post
+GET    /posts/user/:userId      # Get posts by user
 ```
 
 ### **User Endpoints**
 ```
-GET    /api/users/:id           # Get user profile
-PUT    /api/users/:id           # Update profile
-DELETE /api/users/:id           # Delete account
-GET    /api/users/:id/posts     # Get user posts
+GET    /users/:id               # Get user profile
+PUT    /users/:id               # Update user profile
+DELETE /users/:id               # Delete user account
+GET    /users/:id/posts         # Get user posts
+GET    /users/search            # Search users
 ```
 
 ### **Notification Endpoints**
 ```
-GET /api/notifications          # Get all notifications
-POST /api/notifications/mark-read
+GET    /notifications           # Get all notifications
+POST   /notifications/mark-read # Mark notification as read
+DELETE /notifications/:id       # Delete notification
+```
+
+### **Response Format (JSON)**
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": {},
+  "errors": null
+}
 ```
 
 ---
@@ -390,6 +409,50 @@ The app uses **GetX routing** with named routes defined in `lib/routes/app_route
 | `/profile/:userId` | User profile | Yes |
 | `/profile-edit` | Edit own profile | Yes |
 | `/notifications` | Notifications page | Yes |
+
+---
+
+## 🚀 Laravel Backend Setup
+
+### Prerequisites for Backend:
+- PHP 8.1+ 
+- Composer
+- MySQL/MariaDB
+- Laravel 10+
+
+### Quick Setup:
+```bash
+# 1. Create Laravel project
+composer create-project laravel/laravel social_platform_backend
+
+# 2. Install required packages
+composer require tymon/jwt-auth    # JWT authentication
+composer require laravel/cors      # CORS support
+
+# 3. Create database
+mysql -u root -e "CREATE DATABASE social_platform;"
+
+# 4. Configure .env
+DB_DATABASE=social_platform
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 5. Run migrations
+php artisan migrate
+
+# 6. Generate JWT secret
+php artisan jwt:secret
+
+# 7. Start server
+php artisan serve --port=8000
+```
+
+### Required Database Tables:
+- `users` - User information and authentication
+- `posts` - User posts with images
+- `likes` - Posts likes tracking
+- `notifications` - User notifications
+- `otp_codes` - OTP verification storage
 
 ---
 
@@ -532,11 +595,13 @@ Solution: flutter devices
           # adb devices (for Android)
 ```
 
-**Issue:** `Firebase initialization failed`
+**Issue:** `Connection refused to Laravel API`
 ```bash
-Solution: - Verify google-services.json exists
-          - Check Firebase project configuration
-          - Run: flutter clean && flutter pub get
+Solution: - Verify Laravel server is running
+          - Check API base URL configuration
+          - For Android emulator: Use 10.0.2.2 instead of localhost
+          - For iOS simulator: Use localhost or your machine IP
+          - Example: http://10.0.2.2:8000/api
 ```
 
 **Issue:** `Image picker not working`
@@ -546,11 +611,25 @@ Solution: - Check app permissions (Android/iOS)
           - Add permissions in Info.plist (iOS)
 ```
 
-**Issue:** `HTTP connection refused`
+**Issue:** `OTP verification failing`
 ```bash
-Solution: - Verify backend API is running
-          - Check API base URL in code
-          - Use device IP: http://10.0.2.2:port (for Android emulator)
+Solution: - Verify OTP is being generated on Laravel backend
+          - Check OTP expiration time
+          - Ensure email sending is configured on Laravel
+```
+
+**Issue:** `Post upload fails with 413 error`
+```bash
+Solution: - Increase max file upload size in Laravel config
+          - Compress images before upload
+          - Check nginx.conf max_body_size setting
+```
+
+**Issue:** `Authentication token expired`
+```bash
+Solution: - Implement token refresh mechanism
+          - Store refresh token securely
+          - Auto logout if token is invalid
 ```
 
 **Issue:** `GetX controller not found`
@@ -558,6 +637,13 @@ Solution: - Verify backend API is running
 Solution: - Ensure binding is properly registered
           - Check route configuration
           - Verify GetPage includes binding
+```
+
+**Issue:** `CORS errors when calling API`
+```bash
+Solution: - Enable CORS in Laravel middleware
+          - Add proper headers: Access-Control-Allow-Origin
+          - Install and configure laravel-cors package
 ```
 
 ---
@@ -579,12 +665,14 @@ Solution: - Ensure binding is properly registered
 |-------|-----------|
 | **Frontend Framework** | Flutter (Dart) |
 | **State Management** | GetX |
-| **Networking** | HTTP |
-| **Authentication** | Firebase Auth + Custom API |
+| **Networking** | HTTP Client |
+| **Authentication** | Email/Password + OTP (via Laravel API) |
+| **Backend** | Laravel REST API |
+| **Database** | MySQL/MariaDB |
 | **Architecture** | Clean Architecture + MVVM |
 | **Routing** | GetX Named Routes |
 | **Dependency Injection** | GetX Bindings |
-| **Local Storage** | SharedPreferences (optional) |
+| **Image Handling** | Image Picker + HTTP multipart upload |
 
 ---
 
