@@ -146,44 +146,6 @@ flutter build web --release
 
 ---
 
-## 👨‍💻 Technical Stack Summary
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend Framework** | Flutter (Dart) |
-| **State Management** | GetX |
-| **Networking** | HTTP Client |
-| **Authentication** | Email/Password + OTP (via Laravel API) |
-| **Backend** | Laravel REST API |
-| **Database** | MySQL/MariaDB |
-| **Architecture** | Clean Architecture + MVVM |
-| **Routing** | GetX Named Routes |
-| **Dependency Injection** | GetX Bindings |
-| **Image Handling** | Image Picker + HTTP multipart upload |
-
----
-
-## 📞 Support & Contacts
-
-For issues, questions, or contributions:
-- Create an issue in the repository
-- Contact the development team
-- Refer to Flutter documentation: https://docs.flutter.dev
-
----
-
-## 📜 License
-
-This project is proprietary and confidential.
-
----
-
-**Last Updated:** February 2026  
-**Project Status:** In Development
-
-
----
-
 ## Project Setup
 
 
