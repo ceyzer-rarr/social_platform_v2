@@ -10,18 +10,6 @@ A comprehensive Flutter-based social networking application built with modern ar
 
 ---
 
-## 📋 Table of Contents
-
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation & Setup](#installation--setup)
-- [Dependencies](#dependencies)
-- [Getting Started](#getting-started)
-- [Building & Deployment](#building--deployment)
-
----
-
 ## 🎯 Project Overview
 
 **SocialVibe** is a full-featured social media platform designed to provide users with a seamless experience for connecting, sharing, and engaging with others. The application demonstrates professional-grade Flutter development practices including clean architecture, state management with GetX, HTTP networking, and Firebase integration.
